@@ -8,6 +8,18 @@ Mọi thay đổi đáng chú ý của repo **Agent Team** (workflow **Làm Mư�
 
 ---
 
+## [0.3.2] - 2026-05-31
+
+### Added
+
+- **Claude Code global install**: `--global claude` và `--global all` cài `~/.claude/skills/lammuon-team/` (skill + references agents/rules).
+
+### Changed
+
+- README rút gọn: 1 lệnh global (Mac/Win) cho Cursor + Codex + Claude; project install tách mục riêng.
+
+---
+
 ## [0.3.1] - 2026-05-31
 
 ### Added

@@ -28,12 +28,12 @@ Thiếu mục trên → in `⛔ Test Case Gate blocked`, **không** sửa file. 
 
 ## Phiên bản
 
-- **Single source of truth**: file `VERSION` ở root repo (hiện tại: `0.3.1`).
+- **Single source of truth**: file `VERSION` ở root repo (hiện tại: `0.3.2`).
 - Khi bump release: cập nhật `VERSION`, `CHANGELOG.md`, và banner bên dưới (dòng `v…`).
 
 ## Banner khởi động (BẮT BUỘC)
 
-Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu phản hồi** (trong code block), trước mọi nội dung khác. Dòng **version** bắt buộc có (đọc `VERSION` nếu có trong workspace, không thì dùng `0.3.1`):
+Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu phản hồi** (trong code block), trước mọi nội dung khác. Dòng **version** bắt buộc có (đọc `VERSION` nếu có trong workspace, không thì dùng `0.3.2`):
 
 ```
  ██╗      █████╗ ███╗   ███╗    ███╗   ███╗██╗   ██╗ ██████╗ ███╗   ██╗
@@ -43,7 +43,7 @@ Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu ph
  ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║
  ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
                         L À M   M Ư Ớ N   T E A M
-                              v0.3.1
+                              v0.3.2
 ```
 
 Sau banner (cùng lần in đầu session), **bắt buộc in ngay Router header** theo `lammuon-router`, trước mọi status/thought/tóm tắt công việc. Có thể chào ngắn và nhắc version sau Router header, không chèn trước Router header.

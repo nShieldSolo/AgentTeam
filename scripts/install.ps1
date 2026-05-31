@@ -1,5 +1,5 @@
 param(
-  [ValidateSet("project", "cursor", "codex", "all")]
+  [ValidateSet("project", "cursor", "codex", "claude", "all")]
   [string]$Mode = "project",
 
   [string]$ProjectPath = (Get-Location).Path,
@@ -10,7 +10,9 @@ param(
 
   [string]$Branch = "",
 
-  [string]$CodexHome = ""
+  [string]$CodexHome = "",
+
+  [string]$ClaudeHome = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,6 +27,10 @@ if (-not $Branch) {
 
 if (-not $CodexHome) {
   $CodexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME ".codex" }
+}
+
+if (-not $ClaudeHome) {
+  $ClaudeHome = if ($env:CLAUDE_HOME) { $env:CLAUDE_HOME } else { Join-Path $HOME ".claude" }
 }
 
 $script:Installed = 0
@@ -210,36 +216,58 @@ function Sync-CursorGlobal {
   Write-Host "         For Router / Test Case / Build gates in a repo, run project install in that repo."
 }
 
-function Sync-CodexGlobal {
-  param([string]$SourceDir)
+function Sync-SkillBundle {
+  param(
+    [string]$SourceDir,
+    [string]$SkillSrc,
+    [string]$SkillDest,
+    [string]$Scope,
+    [string]$RestartHint
+  )
 
   Reset-Stats
   $stamp = Get-Date -Format "yyyyMMddHHmmss"
-  $skillSrc = Join-Path $SourceDir "codex\skills\lammuon-team"
-  $skillDest = Join-Path $CodexHome "skills\lammuon-team"
-  $stateFile = Join-Path $skillDest ".lammuon-agent.state"
+  $stateFile = Join-Path $SkillDest ".lammuon-agent.state"
 
-  if (-not (Test-Path -LiteralPath (Join-Path $skillSrc "SKILL.md"))) {
-    throw "Codex skill source not found: $skillSrc\SKILL.md"
+  if (-not (Test-Path -LiteralPath (Join-Path $SkillSrc "SKILL.md"))) {
+    throw "Skill source not found: $(Join-Path $SkillSrc 'SKILL.md')"
   }
 
   New-Item -ItemType Directory -Force -Path `
-    (Join-Path $skillDest "references\.cursor\agents"), `
-    (Join-Path $skillDest "references\.cursor\rules") | Out-Null
+    (Join-Path $SkillDest "references\.cursor\agents"), `
+    (Join-Path $SkillDest "references\.cursor\rules") | Out-Null
 
-  Sync-File -Source (Join-Path $skillSrc "SKILL.md") -Destination (Join-Path $skillDest "SKILL.md") -Stamp $stamp
+  Sync-File -Source (Join-Path $SkillSrc "SKILL.md") -Destination (Join-Path $SkillDest "SKILL.md") -Stamp $stamp
 
   Get-ChildItem -LiteralPath (Join-Path $SourceDir ".cursor\agents") -Filter "lammuon-*.md" -File | ForEach-Object {
-    Sync-File -Source $_.FullName -Destination (Join-Path $skillDest "references\.cursor\agents\$($_.Name)") -Stamp $stamp
+    Sync-File -Source $_.FullName -Destination (Join-Path $SkillDest "references\.cursor\agents\$($_.Name)") -Stamp $stamp
   }
 
   Get-ChildItem -LiteralPath (Join-Path $SourceDir ".cursor\rules") -Filter "lammuon-*.mdc" -File | ForEach-Object {
-    Sync-File -Source $_.FullName -Destination (Join-Path $skillDest "references\.cursor\rules\$($_.Name)") -Stamp $stamp
+    Sync-File -Source $_.FullName -Destination (Join-Path $SkillDest "references\.cursor\rules\$($_.Name)") -Stamp $stamp
   }
 
-  Write-State -StateFile $stateFile -SourceDir $SourceDir -Scope "codex-global"
-  Print-Summary -Label "Synced Codex global skill" -Location $skillDest -StateFile $stateFile
-  Write-Host "Restart Codex if the skill is not listed immediately."
+  Write-State -StateFile $stateFile -SourceDir $SourceDir -Scope $Scope
+  Print-Summary -Label "Synced skill ($Scope)" -Location $SkillDest -StateFile $stateFile
+  Write-Host $RestartHint
+}
+
+function Sync-CodexGlobal {
+  param([string]$SourceDir)
+
+  $skillSrc = Join-Path $SourceDir "codex\skills\lammuon-team"
+  $skillDest = Join-Path $CodexHome "skills\lammuon-team"
+  Sync-SkillBundle -SourceDir $SourceDir -SkillSrc $skillSrc -SkillDest $skillDest -Scope "codex-global" `
+    -RestartHint "Restart Codex if the skill is not listed immediately."
+}
+
+function Sync-ClaudeGlobal {
+  param([string]$SourceDir)
+
+  $skillSrc = Join-Path $SourceDir "codex\skills\lammuon-team"
+  $skillDest = Join-Path $ClaudeHome "skills\lammuon-team"
+  Sync-SkillBundle -SourceDir $SourceDir -SkillSrc $skillSrc -SkillDest $skillDest -Scope "claude-global" `
+    -RestartHint "Restart Claude Code if /lammuon-team is not listed immediately."
 }
 
 function Install-FromSource {
@@ -249,9 +277,14 @@ function Install-FromSource {
     "project" { Sync-Project -SourceDir $SourceDir -TargetDir $ProjectPath }
     "cursor" { Sync-CursorGlobal -SourceDir $SourceDir }
     "codex" { Sync-CodexGlobal -SourceDir $SourceDir }
+    "claude" { Sync-ClaudeGlobal -SourceDir $SourceDir }
     "all" {
       Sync-CursorGlobal -SourceDir $SourceDir
       Sync-CodexGlobal -SourceDir $SourceDir
+      Sync-ClaudeGlobal -SourceDir $SourceDir
+      Write-Host ""
+      Write-Host "Global all complete: Cursor + Codex + Claude."
+      Write-Host "Cursor global = agents only. For project rules (.cursor/rules), run project install in each repo."
     }
   }
 }

@@ -21,6 +21,7 @@ Usage:
   scripts/install.sh --update [target-project-dir]
   scripts/install.sh --global cursor
   scripts/install.sh --global codex
+  scripts/install.sh --global claude
   scripts/install.sh --global all
 
 Examples:
@@ -38,10 +39,13 @@ From GitHub:
   curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global codex
   curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash -s -- --global all
 
+  # Global all = Cursor agents + Codex skill + Claude Code skill (one command)
+
 Environment:
   LAMMUON_AGENT_BRANCH=main
   LAMMUON_AGENT_REPO=https://github.com/nShieldSolo/AgentTeam
   CODEX_HOME=$HOME/.codex
+  CLAUDE_HOME=$HOME/.claude
 EOF
 }
 
@@ -65,8 +69,8 @@ while [[ $# -gt 0 ]]; do
       ;;
     --global)
       MODE="${2:-}"
-      if [[ "$MODE" != "cursor" && "$MODE" != "codex" && "$MODE" != "all" ]]; then
-        echo "--global must be one of: cursor, codex, all" >&2
+      if [[ "$MODE" != "cursor" && "$MODE" != "codex" && "$MODE" != "claude" && "$MODE" != "all" ]]; then
+        echo "--global must be one of: cursor, codex, claude, all" >&2
         exit 1
       fi
       shift
@@ -248,18 +252,18 @@ copy_cursor_global_agents() {
   echo "         curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash"
 }
 
-copy_codex_global_skill() {
+copy_skill_bundle() {
   local source_dir="$1"
-  local codex_home="${CODEX_HOME:-$HOME/.codex}"
-  local skill_src="$source_dir/codex/skills/lammuon-team"
-  local skill_dest="$codex_home/skills/lammuon-team"
+  local skill_src="$2"
+  local skill_dest="$3"
+  local scope="$4"
   local stamp state_file
   stamp="$(date +%Y%m%d%H%M%S)"
   state_file="$skill_dest/.lammuon-agent.state"
   reset_stats
 
   if [[ ! -f "$skill_src/SKILL.md" ]]; then
-    echo "Codex skill source not found: $skill_src/SKILL.md" >&2
+    echo "Skill source not found: $skill_src/SKILL.md" >&2
     exit 1
   fi
 
@@ -280,9 +284,28 @@ copy_codex_global_skill() {
     sync_file "$file" "$dest" "$stamp"
   done
 
-  write_state "$state_file" "$source_dir" "codex-global"
-  print_summary "Synced Codex global skill" "$skill_dest" "$state_file"
+  write_state "$state_file" "$source_dir" "$scope"
+  print_summary "Synced skill ($scope)" "$skill_dest" "$state_file"
+}
+
+copy_codex_global_skill() {
+  local source_dir="$1"
+  local codex_home="${CODEX_HOME:-$HOME/.codex}"
+  copy_skill_bundle "$source_dir" \
+    "$source_dir/codex/skills/lammuon-team" \
+    "$codex_home/skills/lammuon-team" \
+    "codex-global"
   echo "Restart Codex if the skill is not listed immediately."
+}
+
+copy_claude_global_skill() {
+  local source_dir="$1"
+  local claude_home="${CLAUDE_HOME:-$HOME/.claude}"
+  copy_skill_bundle "$source_dir" \
+    "$source_dir/codex/skills/lammuon-team" \
+    "$claude_home/skills/lammuon-team" \
+    "claude-global"
+  echo "Restart Claude Code if /lammuon-team is not listed immediately."
 }
 
 install_mode() {
@@ -297,9 +320,16 @@ install_mode() {
     codex)
       copy_codex_global_skill "$source_dir"
       ;;
+    claude)
+      copy_claude_global_skill "$source_dir"
+      ;;
     all)
       copy_cursor_global_agents "$source_dir"
       copy_codex_global_skill "$source_dir"
+      copy_claude_global_skill "$source_dir"
+      echo ""
+      echo "Global all complete: Cursor (~/.cursor/agents) + Codex (~/.codex/skills/lammuon-team) + Claude (~/.claude/skills/lammuon-team)"
+      echo "Cursor global = agents only. For project rules (.cursor/rules), run project install inside each repo."
       ;;
     *)
       echo "Unsupported mode: $MODE" >&2

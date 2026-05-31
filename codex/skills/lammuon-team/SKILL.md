@@ -1,15 +1,15 @@
 ---
 name: lammuon-team
-description: Use when the user asks to use **Làm Mướn Team**, Agent Team, tester-team, PM/BA/Tester/Senior Dev workflow, or wants structured task routing for bug fixes, feature mapping, refactors, testing, API/DB changes, scenario-first QA, or large multi-phase implementation. Also use when Codex should follow the same workflow as the lammuon Cursor agents/rules.
+description: Use when the user asks to use **Làm Mướn Team**, Agent Team, tester-team, PM/BA/Tester/Senior Dev workflow, or wants structured task routing for bug fixes, feature mapping, refactors, testing, API/DB changes, scenario-first QA, or large multi-phase implementation. Use in Codex or Claude Code; mirrors lammuon Cursor agents/rules.
 ---
 
 # **Làm Mướn Team**
 
-Use this skill to emulate the **Làm Mướn Team** workflow inside Codex.
+Use this skill to emulate the **Làm Mướn Team** workflow (Codex / Claude Code).
 
 ## Version
 
-- Single source of truth: `VERSION` at repo root (currently `0.3.1`). Read it when available; otherwise use `0.3.1`.
+- Single source of truth: `VERSION` at repo root (currently `0.3.2`). Read it when available; otherwise use `0.3.2`.
 
 ## Startup banner (BẮT BUỘC)
 
@@ -23,7 +23,7 @@ Ngay khi skill này được kích hoạt, in banner ASCII sau ở đầu phản
  ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║
  ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
                         L À M   M Ư Ớ N   T E A M
-                              v0.3.1
+                              v0.3.2
 ```
 
 ## Preflight (before side effects)
