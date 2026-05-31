@@ -6,14 +6,20 @@ Mọi thay đổi đáng chú ý của repo **Agent Team** (workflow **Làm Mư�
 
 ## [Unreleased]
 
+---
+
+## [0.3.1] - 2026-05-31
+
 ### Added
 
-- **Code Change Build Gate**: Senior Developer phải chạy build FE/BE tương ứng sau mọi thêm/sửa/xoá code hoặc config ảnh hưởng FE/BE; build fail thì fix và rerun trước khi handoff/báo hoàn thành.
-- **Communication & Integrity rules**: giao tiếp ngắn gọn, đi thẳng trọng tâm; không claim đã đọc/chạy/test/build/fix nếu chưa làm.
+- **`lammuon-preflight.mdc`**: rule always-on ngắn — ép Router header + Flow + Test Case Gate (`TC-001`…) trước side effect; fail-fast `⛔ Test Case Gate blocked`.
+- **HARD STARTUP CHECKLIST** trong `lammuon-team.md` (slash command chắc load agent file).
 
 ### Changed
 
-- `lammuon-guardrails`, `lammuon-router`, `lammuon-senior-dev`, `lammuon-testing`, `lammuon-templates` và Codex skill giờ yêu cầu bằng chứng command build/test trước khi mark done.
+- `lammuon-guardrails`: activation trỏ preflight trước khi nạp router dài.
+- `lammuon-router` rule map: ghi `lammuon-preflight` always-on.
+- README + `install.sh` / `install.ps1`: cảnh báo rõ global chỉ cài agents, không cài rules; hướng dẫn verify `.cursor/rules`.
 
 ---
 

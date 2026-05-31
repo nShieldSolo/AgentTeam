@@ -741,7 +741,8 @@ Use this exact order:
 | Rule | Khi nạp | always-on? |
 |---|---|---|
 | `lammuon-guardrails` (core) | Luôn | ✅ |
-| `lammuon-router` | Task dev/bug/feature/test | ❌ (description) |
+| `lammuon-preflight` | `/lammuon-team`, Làm Mướn Team, dev/bug/feature/test | ✅ |
+| `lammuon-router` | Task dev/bug/feature/test (chi tiết router) | ❌ (description) |
 | `lammuon-templates` | Small/Medium xuất output | ❌ (description) |
 | `lammuon-speckit` | Large Team | ❌ (description) |
 | `lammuon-testing` | Có test/verify/QA | ❌ (description) |

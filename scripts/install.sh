@@ -241,7 +241,11 @@ copy_cursor_global_agents() {
 
   write_state "$state_file" "$source_dir" "cursor-global"
   print_summary "Synced Cursor global agents" "$target_dir" "$state_file"
-  echo "Note: Cursor Project Rules still live in each project's .cursor/rules directory."
+  echo ""
+  echo "WARNING: Cursor global install only syncs agents (~/.cursor/agents)."
+  echo "         It does NOT install .cursor/rules (lammuon-preflight, lammuon-router, ...)."
+  echo "         For Router / Test Case / Build gates in a repo, run project install in that repo:"
+  echo "         curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash"
 }
 
 copy_codex_global_skill() {

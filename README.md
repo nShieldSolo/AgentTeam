@@ -1,6 +1,6 @@
 # Agent Team
 
-**Phiên bản:** `0.3.0` (xem [`VERSION`](VERSION), lịch sử tại [`CHANGELOG.md`](CHANGELOG.md))
+**Phiên bản:** `0.3.1` (xem [`VERSION`](VERSION), lịch sử tại [`CHANGELOG.md`](CHANGELOG.md))
 
 Repo này chưa có code ứng dụng. Đây là bộ cấu hình Cursor cho **Làm Mướn Team**: một workflow dùng nhiều vai trò AI để phân tích, code và verify task một cách có kiểm soát.
 
@@ -27,6 +27,7 @@ Repo này chưa có code ứng dụng. Đây là bộ cấu hình Cursor cho **L
     lammuon-senior-dev.md
   rules/
     lammuon-guardrails.mdc
+    lammuon-preflight.mdc
     lammuon-guardrails-detail.mdc
     lammuon-router.mdc
     lammuon-templates.mdc
@@ -59,7 +60,8 @@ README.md
 ## Các rule chính
 
 - **lammuon-guardrails.mdc**: rule an toàn core, always-on.
-- **lammuon-router.mdc**: phân loại task thành Tester/Small/Medium/Large Team và chọn flow.
+- **lammuon-preflight.mdc**: cầu chì always-on — Router header, Flow, Test Case Gate trước side effect (ngắn, khó bị rơi context).
+- **lammuon-router.mdc**: phân loại task thành Tester/Small/Medium/Large Team và chọn flow (nạp khi cần chi tiết; không always-on vì dài).
 - **lammuon-templates.mdc**: template output bắt buộc cho Small/Medium Team.
 - **lammuon-speckit.mdc**: template SpecKit đầy đủ cho Large Team.
 - **lammuon-testing.mdc**: quy tắc test case, UI/API/DB/regression testing.
@@ -163,6 +165,25 @@ Cơ chế update:
   - Cursor global: `~/.cursor/agents/.lammuon-agent.state`
   - Codex global: `~/.codex/skills/lammuon-team/.lammuon-agent.state`
 
+### ⚠️ Global install ≠ Project Rules
+
+**Cursor global install chỉ cài subagents** (`~/.cursor/agents/lammuon-*.md`). **Không** cài `.cursor/rules`.
+
+Nếu anh muốn `/lammuon-team` ép Router header, Test Case Gate và Build gate **trong repo đang làm**, bắt buộc chạy **project install** trong repo đó:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.sh | bash
+```
+
+Kiểm tra nhanh trong project:
+
+```bash
+ls -la .cursor/agents/lammuon-team.md
+ls -la .cursor/rules/lammuon-preflight.mdc .cursor/rules/lammuon-guardrails.mdc .cursor/rules/lammuon-router.mdc
+```
+
+Chỉ có `~/.cursor/agents/lammuon-team.md` mà project không có `.cursor/rules` → slash command chạy nhưng **không có** preflight/router/testing gates.
+
 ### Cài global cho Cursor/Codex
 
 Cài global Cursor subagents vào `~/.cursor/agents`:
@@ -201,7 +222,7 @@ Windows PowerShell cài cả hai:
 powershell -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/nShieldSolo/AgentTeam/main/scripts/install.ps1'))) -Mode all"
 ```
 
-Lưu ý: Cursor Project Rules vẫn là project-scoped trong `.cursor/rules`. Cài global Cursor ở trên chỉ cài subagents; nếu muốn rule chạy chắc trong một repo cụ thể, vẫn nên chạy lệnh cài project trong repo đó.
+Lưu ý: xem mục **⚠️ Global install ≠ Project Rules** ở trên — mỗi repo cần project install để có `lammuon-preflight` và các rule trong `.cursor/rules`.
 
 ### Gọi agent/rule
 

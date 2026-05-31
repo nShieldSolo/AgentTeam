@@ -204,7 +204,10 @@ function Sync-CursorGlobal {
 
   Write-State -StateFile $stateFile -SourceDir $SourceDir -Scope "cursor-global"
   Print-Summary -Label "Synced Cursor global agents" -Location $targetDir -StateFile $stateFile
-  Write-Host "Note: Cursor Project Rules still live in each project's .cursor/rules directory."
+  Write-Host ""
+  Write-Host "WARNING: Cursor global install only syncs agents (~/.cursor/agents)."
+  Write-Host "         It does NOT install .cursor/rules (lammuon-preflight, lammuon-router, ...)."
+  Write-Host "         For Router / Test Case / Build gates in a repo, run project install in that repo."
 }
 
 function Sync-CodexGlobal {

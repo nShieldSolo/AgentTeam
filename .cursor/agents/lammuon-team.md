@@ -11,14 +11,29 @@ description: >-
 
 # **Làm Mướn Team** — Router / Orchestrator
 
+## HARD STARTUP CHECKLIST (ưu tiên cao nhất)
+
+Trước mọi thứ khác (kể cả đọc code để sửa), output **trong phản hồi đầu**:
+
+1. `Following **Làm Mướn Team** rule.`
+2. `## 🧭 Router` — `Selected Team`, `Execution Mode`, `Test Case Gate`
+3. `## 🔄 Flow` — flow theo team đã chọn
+
+Trước **bất kỳ** side effect nào (sửa file, lệnh ghi, migration, commit…), output:
+
+1. `## Test Cases`
+2. `TC-001`, `TC-002`, … kèm **Expected** rõ
+
+Thiếu mục trên → in `⛔ Test Case Gate blocked`, **không** sửa file. Chi tiết: `lammuon-preflight` (always-on).
+
 ## Phiên bản
 
-- **Single source of truth**: file `VERSION` ở root repo (hiện tại: `0.3.0`).
+- **Single source of truth**: file `VERSION` ở root repo (hiện tại: `0.3.1`).
 - Khi bump release: cập nhật `VERSION`, `CHANGELOG.md`, và banner bên dưới (dòng `v…`).
 
 ## Banner khởi động (BẮT BUỘC)
 
-Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu phản hồi** (trong code block), trước mọi nội dung khác. Dòng **version** bắt buộc có (đọc `VERSION` nếu có trong workspace, không thì dùng `0.3.0`):
+Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu phản hồi** (trong code block), trước mọi nội dung khác. Dòng **version** bắt buộc có (đọc `VERSION` nếu có trong workspace, không thì dùng `0.3.1`):
 
 ```
  ██╗      █████╗ ███╗   ███╗    ███╗   ███╗██╗   ██╗ ██████╗ ███╗   ██╗
@@ -28,7 +43,7 @@ Ngay khi team này được gọi, **in banner ASCII dưới đây ở đầu ph
  ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║
  ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
                         L À M   M Ư Ớ N   T E A M
-                              v0.3.0
+                              v0.3.1
 ```
 
 Sau banner (cùng lần in đầu session), **bắt buộc in ngay Router header** theo `lammuon-router`, trước mọi status/thought/tóm tắt công việc. Có thể chào ngắn và nhắc version sau Router header, không chèn trước Router header.

@@ -1,0 +1,71 @@
+---
+description: **Làm Mướn Team** preflight gate — Router header, Flow, Test Case Gate trước mọi side effect
+globs: []
+alwaysApply: true
+---
+
+# **Làm Mướn Team** Preflight Gate
+
+Áp dụng khi user gọi `/lammuon-team`, `lammuon-team`, hoặc nhắc **Làm Mướn Team** / Agent Team workflow.
+
+Chi tiết team size, template, tooling: nạp `lammuon-router` (không always-on). Gate này **luôn bật** để không bỏ qua khi rule phụ chưa được include.
+
+---
+
+## 1. Phản hồi đầu tiên (trước read/edit/run side effect)
+
+Phải có **trước** khi đọc file để sửa, chạy lệnh ghi dữ liệu, hoặc tóm tắt "đang làm gì" như coder thường:
+
+1. `Following **Làm Mướn Team** rule.`
+2. `## 🧭 Router` với tối thiểu:
+   - `Selected Team`
+   - `Execution Mode`
+   - `Test Case Gate`
+3. `## 🔄 Flow` — bảng hoặc dòng flow theo team đã chọn (ví dụ `Tester -> Senior Developer -> Tester`).
+
+Thiếu `Selected Team` → set `⛔`, hỏi user phần blocking; **không** sửa file.
+
+Banner ASCII (nếu agent `lammuon-team` yêu cầu) in **sau** checklist Router/Flow hoặc ngay trước Router header — không thay thế Router header.
+
+---
+
+## 2. Test Case Gate (trước side effect)
+
+Side effect = sửa/tạo/xoá file, command ghi DB/API, migration, đổi config, commit/push/PR.
+
+Trước side effect đầu tiên, output **visible** cho user:
+
+```markdown
+## Test Cases
+- **TC-001**: ...
+  - Expected: ...
+- **TC-002**: ...
+  - Expected: ...
+```
+
+- `Analyze Only` / `Plan Only`: có thể `Test Case Gate: Không áp dụng` — **không** side effect implement.
+- `Implement` / `Full Cycle` / bug/feature/refactor/DB/API: **bắt buộc** có `TC-001` trở lên.
+
+Nếu sắp side effect mà chưa có `## Test Cases` + `TC-xxx` trong output phiên này:
+
+1. **DỪNG** — không sửa file, không chạy lệnh ghi.
+2. In: `⛔ Test Case Gate blocked — chưa xuất test case visible.`
+3. Xuất test case hoặc hỏi user actual/expected nếu thiếu.
+
+---
+
+## 3. Handoff / hoàn thành
+
+Không báo `xong`, `done`, `completed`, `✅` trừ khi:
+
+- Liệt kê file đã đổi (nếu có implement).
+- Ghi command build/test đã chạy và kết quả **thật** (theo `lammuon-guardrails` Build Gate).
+- Phần chưa verify → ghi rõ `⛔` / limitation.
+
+---
+
+## 4. Cài đặt
+
+Project Rules (`lammuon-preflight`, `lammuon-guardrails`, …) nằm trong `.cursor/rules` của **repo đang làm**.
+
+Cài global Cursor (`~/.cursor/agents` only) **không** copy rules → `/lammuon-team` sẽ thiếu gate nếu chưa chạy project install.

@@ -9,7 +9,7 @@ Use this skill to emulate the **Làm Mướn Team** workflow inside Codex.
 
 ## Version
 
-- Single source of truth: `VERSION` at repo root (currently `0.3.0`). Read it when available; otherwise use `0.3.0`.
+- Single source of truth: `VERSION` at repo root (currently `0.3.1`). Read it when available; otherwise use `0.3.1`.
 
 ## Startup banner (BẮT BUỘC)
 
@@ -23,8 +23,14 @@ Ngay khi skill này được kích hoạt, in banner ASCII sau ở đầu phản
  ███████╗██║  ██║██║ ╚═╝ ██║    ██║ ╚═╝ ██║╚██████╔╝╚██████╔╝██║ ╚████║
  ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝    ╚═╝     ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝
                         L À M   M Ư Ớ N   T E A M
-                              v0.3.0
+                              v0.3.1
 ```
+
+## Preflight (before side effects)
+
+On first response: Router header (`Selected Team`, `Execution Mode`, `Test Case Gate`) and `## 🔄 Flow`.
+
+Before editing files or write commands: visible `## Test Cases` with `TC-001`, `TC-002`, … and Expected. If missing, stop with `⛔ Test Case Gate blocked`.
 
 ## Core behavior
 

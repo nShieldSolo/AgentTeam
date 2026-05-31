@@ -12,7 +12,12 @@ Hard safety rules cho mọi **Làm Mướn Team** agent (PM, BA, Tester, Senior 
 
 ## Activation (khi nào kích hoạt team)
 
-Với task dev/bug/feature/mapping/refactor/test/DB/API: **nạp `lammuon-router`** và tuân theo. Router sẽ kéo thêm `lammuon-templates` (Small/Medium), `lammuon-speckit` (Large), `lammuon-testing`, `lammuon-tooling` khi cần.
+Với task dev/bug/feature/mapping/refactor/test/DB/API hoặc `/lammuon-team`:
+
+1. **`lammuon-preflight`** (always-on): Router header + Flow + Test Case Gate trước side effect — không bỏ qua.
+2. **Nạp `lammuon-router`** và tuân theo chi tiết team size/template. Router sẽ kéo thêm `lammuon-templates` (Small/Medium), `lammuon-speckit` (Large), `lammuon-testing`, `lammuon-tooling` khi cần.
+
+Nếu response đầu không có Router header hoặc sắp sửa file mà chưa có `## Test Cases` + `TC-001` → **dừng** theo preflight; không implement.
 
 ---
 
